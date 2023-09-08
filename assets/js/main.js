@@ -19,13 +19,8 @@ function convertPokemonToList(pokemon) {
 </li>`;
 }
 
-fetch(url)
-  .then(response => response.json())
-  .then(data => data.results)
-  .then(pokemonsList => {
-    for (let i=0; i<pokemonsList.length; i++) {
-      const pokemon = pokemonsList[i];
-      document.querySelector('#pokemonsList').innerHTML += convertPokemonToList(pokemon);
-    }
-  })
-  .catch(error => console.log(error));
+const elementList = document.getElementById('pokemonsList');
+
+pokeApi.getPokemons().then((pokemonsList = []) => {
+    elementList.innerHTML += pokemonsList.map(convertPokemonToList).join('');  
+  });
