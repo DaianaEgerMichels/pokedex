@@ -1,31 +1,52 @@
-
-const offset = 0;
-const limit = 10;
-const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`;
+const elementList = document.getElementById("pokemonsList");
+const loadMoreButton = document.getElementById("loadMore");
 
 function convertPokemonToList(pokemon) {
   return `
-  <li class="pokemon">
-  <span class="number">#001</span>
+  <li class="pokemon ${
+    pokemon.type
+  }" id="pokemon" onClick=redirectToPokemonDetails(${pokemon.number})>
+  <span class="number">#${pokemon.number}</span>
   <span class="name">${pokemon.name}</span>
 
   <div class="detail">
     <ol class="types">
-      <li class="type">grass</li>
-      <li class="type">poison</li>
+      ${pokemon.types
+        .map((type) => `<li class="type ${type}">${type}</li>`)
+        .join("")}
     </ol>
-    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="${pokemon.name}">
+    <img src="${pokemon.photo}" alt="${pokemon.name}">
   </div>
 </li>`;
 }
 
-fetch(url)
-  .then(response => response.json())
-  .then(data => data.results)
-  .then(pokemonsList => {
-    for (let i=0; i<pokemonsList.length; i++) {
-      const pokemon = pokemonsList[i];
-      document.querySelector('#pokemonsList').innerHTML += convertPokemonToList(pokemon);
-    }
-  })
-  .catch(error => console.log(error));
+pokeApi.getPokemons().then((pokemonsList = []) => {
+  elementList.innerHTML += pokemonsList.map(convertPokemonToList).join("");
+});
+
+function loadPokemonItems(offset, limit) {
+  pokeApi.getPokemons(offset, limit).then((pokemonsList = []) => {
+    elementList.innerHTML += pokemonsList.map(convertPokemonToList).join("");
+  });
+}
+
+const MAX_ITEMS = 151;
+const LIMIT = 10;
+let OFFSET = 0;
+
+loadMoreButton.addEventListener("click", () => {
+  OFFSET += LIMIT;
+  const QTD_ITEMS_VISIBLE = OFFSET + LIMIT;
+
+  if (QTD_ITEMS_VISIBLE >= MAX_ITEMS) {
+    const NEW_LIMIT = MAX_ITEMS - OFFSET;
+    loadPokemonItems(OFFSET, NEW_LIMIT);
+    loadMoreButton.parentElement.removeChild(loadMoreButton);
+  } else {
+    loadPokemonItems(OFFSET, LIMIT);
+  }
+});
+
+function redirectToPokemonDetails(pokemon) {
+  window.location.href = `./pokemon.html?pokemon=${pokemon}`;
+}

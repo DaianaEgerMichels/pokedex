@@ -1,5 +1,5 @@
 * {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   box-sizing: border-box;
 }
 
@@ -11,14 +11,15 @@ body {
   width: 100vw;
   height: 100vh;
   padding: 1rem;
-  background-color: #fff;
+  background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+  font-family: Roboto, sans serif;
 }
 
 @media screen and (min-width: 992px) {
   .content {
-      max-width: 992px;
-      height: auto;
-      margin: 1rem auto;
-      border-radius: 1rem;
+    max-width: 992px;
+    height: auto;
+    margin: 1rem auto;
+    border-radius: 1rem;
   }
 }
